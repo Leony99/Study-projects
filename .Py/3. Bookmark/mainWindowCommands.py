@@ -40,7 +40,7 @@ def setTreeviewInfo(id, treeview):
 def addBook(id, treeview):
     addWindow = Toplevel()
     addWindow.title("Add book")
-    functions.window_size_center(addWindow, 430, 220)
+    functions.centralizeAndResize(addWindow, 430, 220)
     addWindow.resizable(False, False)
 
     nameLabel = Label(addWindow, text='Book name:', font=("Helvetica", 12, "bold"))
@@ -72,8 +72,8 @@ def addBook(id, treeview):
             cursor.execute("""INSERT INTO books (userId, bookName, bookAuthor, actualPage)
             VALUES (?, ?, ?, ?);""", (id, bookName, bookAuthor, int(actualPage)))
             conn.commit()
+
             setTreeviewInfo(id, treeview)
-            messagebox.showinfo("Success", "Book added!")
             addWindow.destroy()
 
 def editBook(id, treeview):
@@ -83,7 +83,7 @@ def editBook(id, treeview):
     if content["values"] != "":
         editWindow = Toplevel()
         editWindow.title("edit book")
-        functions.window_size_center(editWindow,430,220)
+        functions.centralizeAndResize(editWindow,430,220)
         editWindow.resizable(False, False)
 
         nameLabel = Label(editWindow, text='Book name:', font=("Helvetica", 12, "bold"))
@@ -119,21 +119,24 @@ def editBook(id, treeview):
                 WHERE userId = ? AND bookName=? AND bookAuthor=? AND actualPage=?;""",
                 (bookName, bookAuthor, actualPage, id, content["values"][0], content["values"][1], int(content["values"][2])))
                 conn.commit()
+
                 setTreeviewInfo(id, treeview)
-                messagebox.showinfo("Success", "Book edited!")
                 editWindow.destroy()
 
     else:
         messagebox.showwarning("warning", "Select a book!")
 
-
 def excludeBook(id, treeview):
     indexing = treeview.focus()
     content = treeview.item(indexing)
 
-    cursor.execute("""DELETE FROM books
-    WHERE userId=? AND bookName=? AND bookAuthor=? AND actualPage=?;""",
-    (id, content["values"][0], content["values"][1], int(content["values"][2])))
-    conn.commit()
+    if content["values"] != "":
+        cursor.execute("""DELETE FROM books
+        WHERE userId=? AND bookName=? AND bookAuthor=? AND actualPage=?;""",
+        (id, content["values"][0], content["values"][1], int(content["values"][2])))
+        conn.commit()
 
-    setTreeviewInfo(id, treeview)
+        setTreeviewInfo(id, treeview)
+
+    else:
+        messagebox.showwarning("warning", "Select a book!")

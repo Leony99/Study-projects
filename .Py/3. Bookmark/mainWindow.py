@@ -8,7 +8,7 @@ import mainWindowCommands
 def open(id):
     #window
     window = Tk()
-    functions.window_size_center(window, 700, 500)
+    functions.centralizeAndResize(window, 700, 500)
     window.resizable(width=False, height=False)
     window.title("Bookmark")
 
